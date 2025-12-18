@@ -1,6 +1,7 @@
 package com.algaworks.moderation_service.api.controller;
 
 import com.algaworks.moderation_service.api.model.WordInput;
+import com.algaworks.moderation_service.common.ProhibitedWords;
 import com.algaworks.moderation_service.domain.model.ProhibitedWord;
 import com.algaworks.moderation_service.domain.repository.ProhibitedWordRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +12,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/moderate/words")
-@RequiredArgsConstructor
 public class WordController {
 
     private final ProhibitedWordRepository prohibitedWordRepository;
+
+    public WordController(ProhibitedWordRepository prohibitedWordRepository) {
+        this.prohibitedWordRepository = prohibitedWordRepository;
+
+        prohibitedWordRepository.findAll()
+                .forEach(prohibitedWord -> ProhibitedWords.addWord(prohibitedWord.getWord()));
+    }
 
     @GetMapping
     public List<String> getProhibitedWords() {
@@ -32,5 +39,6 @@ public class WordController {
                 .build();
 
         prohibitedWordRepository.save(prohibitedWord);
+        ProhibitedWords.addWord(input.getWord());
     }
 }
