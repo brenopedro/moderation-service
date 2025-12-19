@@ -7,5 +7,5 @@ import lombok.Data;
 public class ModerationInput {
 
     private String text;
-    private TSID commentId;
+    private String commentId;
 }
